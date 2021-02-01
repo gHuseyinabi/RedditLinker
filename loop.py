@@ -21,9 +21,9 @@ def loop(subredditname):
                     if canlook:
                         Post = find_post(post.preview["images"][0]["source"]["url"])
                         if Post is None:
-                            comment.reply(reply.notfound)
+                            comment.reply(reply.notfound + reply.sourcecode)
                         else:
-                            comment.reply(reply.found.format(Post.title, Post.permalink))
+                            comment.reply(reply.found.format(Post.title, Post.permalink) + reply.sourcecode)
                             print("[UYARI] Replied",reply.found.format(Post.title, Post.permalink))
                     else:
                         comment.reply(reply.resimyok)

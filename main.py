@@ -20,9 +20,11 @@ def Bot():
                     print("aha")
                     loop.ExecuteCommand(item)
                 elif lower == "good bot":
-                    item.reply("")
+                    item.reply("ヽ(•‿•)ノ")
+                elif lower == "bad bot":
+                    item.reply("( ._.)")
                 else:
-                    print("nope",lower)
+                    print("nope", lower)
             except Exception as e:
                 print(f"Oops,thats stinky!Error:{e}")
             item.mark_read()

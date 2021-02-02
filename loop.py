@@ -22,12 +22,11 @@ def ExecuteCommand(comment: praw.models.Comment):
         subreddit = comment.subreddit.display_name.lower()
 
         if Post is None or Post.get("match") is None:
-            base = reply.replies["notfound"]
-            base = base["tc"] if subreddit in reply.tcsubredditleri else base["other"]
-            comment.reply(base + reply.get_source_code(subreddit))
+            base = reply.getTranslatedReplyByName("notfound", subreddit)
+            comment.reply(base + reply.getTranslatedReplyByName("sourcecode", subreddit))
         else:
             posts = Post.get("matches")
-            final = reply.get_proper_reply(posts,subreddit)
+            final = reply.get_proper_reply(posts, subreddit)
             print("[Yanit verildi]", final)
             comment.reply(final)
     else:

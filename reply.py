@@ -21,19 +21,28 @@ replies = {
     'sourcecode': {
         'tr':'\r\n^[kaynak kodum](https://github.com/gHuseyinabi/RedditLinker)',
         'other':'\r\n^[source code](https://github.com/gHuseyinabi/RedditLinker)'
+    },
+    'good':{
+        'tr':'tşk',
+        'other':'thx'
+    },
+    'bad':{
+        'tr':' peki',
+        'other': ':('
     }
 }
 
-tcsubredditleri = ["kgbtr","testyapiyorum","svihs","turkeyjerkey","turkey"]
-
-def get_source_code(subredditname):
-    print(subredditname)
-    base = replies["sourcecode"]
+def getTranslatedReplyByName(key: str,subredditname: str) -> str:
+    base = replies[key]
     if subredditname in tcsubredditleri:
         reply = base["tr"]
     else:
         reply = base["other"]
     return reply
+
+
+tcsubredditleri = ["kgbtr","testyapiyorum","svihs","turkeyjerkey","turkey"]
+
 
 
 def get_proper_reply(posts,subredditname) -> str:
@@ -43,4 +52,4 @@ def get_proper_reply(posts,subredditname) -> str:
         reply = reply["tr"]
     else:
         reply = reply["other"]
-    return reply + formations + get_source_code(subredditname)
+    return reply + formations + getTranslatedReplyByName("sourcecode",subredditname)

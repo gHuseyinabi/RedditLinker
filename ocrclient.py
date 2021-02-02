@@ -1,5 +1,6 @@
 import requests
 from typing import Union
+
 OCR_PARAMS: dict = {'lang': '*', 'srv': 'android'}
 OCR_BASE: str = 'https://translate.yandex.net/ocr/v1.1/recognize'
 
@@ -24,6 +25,7 @@ class OCR:
             print('[abort] request alınamadı')
             return None
         jRequest: dict = request.json()
+        print(request.content)
         if 'err' in jRequest:
             print(f'[abort] ocr hata verdi.resp:{jRequest}')
             return None

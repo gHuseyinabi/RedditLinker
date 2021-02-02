@@ -1,10 +1,12 @@
 from client import client
 from findpost import find_post
 import reply
+from config import config
+import time
 
-
-def loop(subredditname) -> None:
+def loop(subredditname: str) -> None:
     print("Başlıyor...")
+    log_stream = open(config.get("logFile") if "logFile" in config else "default.log","w")
     print("Listening comments at " + subredditname)
     stream = client.subreddit(subredditname).stream
 
@@ -13,6 +15,7 @@ def loop(subredditname) -> None:
             try:
                 cbody: str = comment.body.lower()
                 if "u/redditlinker" in cbody or "u/reddit_linker" in cbody:
+                    log_stream.write("Replying")
                     print("Aha!Found a match.")
                     post = comment.submission
                     canlook: bool = False
@@ -23,15 +26,10 @@ def loop(subredditname) -> None:
                         if Post is None or Post.get("match") is None:
                             comment.reply(reply.notfound + reply.sourcecode)
                         else:
-                            if len(Post.get("matches")) == 1:
-                                _Post = post.get("match")
-                                comment.reply(reply.found.format(_Post.title, _Post.permalink) + reply.sourcecode)
-                                print("[UYARI] Replied", reply.found.format(_Post.title, _Post.permalink))
-                            else:
-                                posts = Post.get("matches")
-                                formattedposts = '\n'.join(
-                                    list(reply.formatted_link.format(post.title, post.permalink) for post in posts))
-                                print(reply.foundmuch + formattedposts)
+                            posts = Post.get("matches")
+                            final = reply.get_proper_reply(posts)
+                            print("[Yanit verildi]", final)
+                            comment.reply(final)
                     else:
                         comment.reply(reply.resimyok)
             except Exception as e:

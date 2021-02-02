@@ -26,6 +26,7 @@ def find_post(image_url) -> dict:
             print("Filtered:",yaziblok)
             search = client.subreddit("all").search(yaziblok)
             notmatched = False
+            foundany = False
             for result in search:
                 title = result.title
                 directaccess = False
@@ -37,8 +38,11 @@ def find_post(image_url) -> dict:
                             notmatched = True
                     if notmatched:
                         continue
+                foundany = True
                 matches.append(result)
                 print(f"Found one!The name is {result.title} and the url is https://www.reddit.com{result.permalink}")
+            if foundany:
+                break
         except Exception as e:
             print(e)
             continue

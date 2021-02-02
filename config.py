@@ -1,3 +1,3 @@
 import json
 
-config = json.load(open("config.json", "r"))
+config: dict = json.load(open("config.json", "r"))

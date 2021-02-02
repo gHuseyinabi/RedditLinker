@@ -1,17 +1,16 @@
 from ocrclient import OCR
 from client import client
 
-#Returns: Post
 
-
-def find_post(image_url):
-    ocr_client = OCR()
-    yazi = ocr_client.get(image_url, asarray=True)
+def find_post(image_url) -> dict:
+    ocr_client: OCR = OCR()
+    yazi = ocr_client.get(image_url, as_array=True)
+    print(yazi)
     full = " ".join(yazi)
     matches = []
     matchnums = []
     truematch = None
-    for yaziblok in yazi[1:-1]:
+    for yaziblok in yazi[1:]:
         print("[UYARI]", yaziblok)
         try:
             wordbyword = yaziblok.split()
@@ -19,24 +18,33 @@ def find_post(image_url):
                     any(listing in wordbyword for listing in ["best", "hot", "new"]) and len(
                     wordbyword) == 1) or yaziblok.strip("1234567890") == "":
                 continue
-            yaziblok = yaziblok.strip("1234567890")
+            #çok ayrıntılı bir arama
+            for advkelime in wordbyword:
+                if advkelime[0].isdigit() and (advkelime.endswith("k")  or advkelime.endswith(".")):
+                    yaziblok = yaziblok.replace(advkelime,"")
+            yaziblok = yaziblok.strip()
+            print("Filtered:",yaziblok)
             search = client.subreddit("all").search(yaziblok)
             notmatched = False
             for result in search:
                 title = result.title
-                for kelime in title:
-                    if kelime not in full:
-                        notmatched = True
-                if notmatched:
-                    continue
+                directaccess = False
+                if title == yaziblok:
+                    directaccess = True
+                if not directaccess:
+                    for kelime in title:
+                        if kelime not in full:
+                            notmatched = True
+                    if notmatched:
+                        continue
                 matches.append(result)
-                print(result)
-        except:
+                print(f"Found one!The name is {result.title} and the url is https://www.reddit.com{result.permalink}")
+        except Exception as e:
+            print(e)
             continue
     for match in matches:
         length = len(match.title)
         matchnums.append(length)
         if length == max(matchnums):
             truematch = match
-    matches.remove(truematch) #just to be safe idk that much python
-    return truematch
+    return {"match": truematch, "matches": matches}

@@ -23,6 +23,9 @@ def find_post(image_url) -> dict:
                 if advkelime[0].isdigit() and (advkelime.endswith("k")  or advkelime.endswith(".")):
                     yaziblok = yaziblok.replace(advkelime,"")
             yaziblok = yaziblok.strip()
+            if yaziblok.split()[0].isdigit():
+                yaziblok = yaziblok.replace(yaziblok.split()[0],"")
+            yaziblok = yaziblok.strip()
             print("Filtered:",yaziblok)
             search = client.subreddit("all").search(yaziblok)
             notmatched = False

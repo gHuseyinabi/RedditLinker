@@ -1,3 +1,14 @@
 {
-"logFile": "lookedupfor.log"
+"logFile": "lookedupfor.log",
+  "prefix": {
+    "start": "u/reddit_linker",
+    "rate": {
+      "good": "good bot",
+      "bad": "bad bot"
+    },
+    "response": {
+      "good": "tşk",
+      "bad": "peki"
+    }
+  }
 }

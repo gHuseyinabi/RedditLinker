@@ -6,12 +6,12 @@ import reply
 from config import config
 import time
 import praw.models
+from log import log
 
-log_stream = open(config.get("logFile") if "logFile" in config else "default.log", "w")
 
 
-def ExecuteCommand(comment: praw.models.Comment):
-    log_stream.write("Replying")
+def ExecuteCommand(comment):
+    log("Replying")
     print("Aha!Found a match.")
     post = comment.submission
     canlook: bool = False
@@ -29,6 +29,7 @@ def ExecuteCommand(comment: praw.models.Comment):
             final = reply.get_proper_reply(posts, subreddit)
             print("[Yanit verildi]", final)
             comment.reply(final)
+            log(f"{final}\n\n")
     else:
         comment.reply(reply.resimyok)
 

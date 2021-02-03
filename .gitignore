@@ -2,3 +2,5 @@
 __pycache__
 venv
 info.json
+lookedupfor.log
+default.log

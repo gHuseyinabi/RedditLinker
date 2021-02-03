@@ -20,7 +20,7 @@ def Bot():
                 lower = item.body.lower()
                 if "u/reddit_linker" in lower:
                     print("aha")
-                    threading.Thread(target=loop.ExecuteCommand, args=(item)).start()
+                    threading.Thread(target=loop.ExecuteCommand, args=(item,)).start()
                 elif lower == "good bot":
                     item.reply("ヽ(•‿•)ノ")
                 elif lower == "bad bot":

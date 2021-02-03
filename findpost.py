@@ -1,9 +1,8 @@
 from ocrclient import OCR
-from client import client
+from client import client,ocr_client
 
 
 def find_post(image_url) -> dict:
-    ocr_client: OCR = OCR()
     yazi = ocr_client.get(image_url, as_array=True)
     print(yazi)
     full = " ".join(yazi)

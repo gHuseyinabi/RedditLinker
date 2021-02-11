@@ -1,13 +1,13 @@
 import loop
 from log import log
-from client import client, ocr_client
+from ocrclient import OCR
 from praw.models import Comment
+from praw import Reddit
 import time
 import threading
 
-# listeningbynew = ["kgbtr", "svihs", "turkeyjerkey", "ateistturk", "turkey", "burdurland"]
 
-def Bot():
+def Bot(client: Reddit):
     log(f"[BOT]Started working at {time.time()}")
     print("in function Bot()")
     while True:
@@ -33,23 +33,3 @@ def Bot():
                 log(f"[ERROR]:{e}\n")
             item.mark_read()
         time.sleep(15)
-
-if False:
-    """
-def BotListenByNewThread(subreddit):
-    print("Listening by " + subreddit + " new")
-    substream = client.subreddit(subreddit).stream
-    for post in substream.submissions(skip_existing=True):
-        canlook: bool = False
-        if hasattr(post, 'preview'):
-            canlook = True
-        if canlook:
-            imgurl = post.preview["images"][0]["source"]["url"]
-            ocr = ocr_client.get(imgurl)
-            print("IS_REDDIT_POST" + "posted by" in ocr.lower())
-            print(ocr)
-        print(post.title)
-        print(post.subreddit.display_name)
-        print(canlook)
-
-        pass"""

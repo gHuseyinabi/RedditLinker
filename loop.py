@@ -3,11 +3,11 @@ import praw
 from client import client
 from findpost import find_post
 import reply
+import beta
 from config import config
 import time
 import praw.models
 from log import log
-
 
 
 def ExecuteCommand(comment):
@@ -18,14 +18,21 @@ def ExecuteCommand(comment):
     if hasattr(post, 'preview'):
         canlook = True
     if canlook:
-        Post = find_post(post.preview["images"][0]["source"]["url"])
+        Post = beta.RedditLinkerGlobalFinder(post.preview["images"][0]["source"]["url"])
         subreddit = comment.subreddit.display_name.lower()
-
-        if Post is None or Post.get("match") is None:
+        l = 1
+        try:
+            l = Post.get("matches")
+        except:
+            pass
+        if Post is None or l is None:
             base = reply.getTranslatedReplyByName("notfound", subreddit)
             comment.reply(base + reply.getTranslatedReplyByName("sourcecode", subreddit))
         else:
-            posts = Post.get("matches")
+            if hasattr(Post,"get"):
+                posts = Post.get("matches")
+            else:
+                posts = Post
             final = reply.get_proper_reply(posts, subreddit)
             print("[Yanit verildi]", final)
             comment.reply(final)

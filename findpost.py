@@ -1,5 +1,27 @@
-from ocrclient import OCR
-from client import client,ocr_client
+from client import client, ocr_client
+
+poop_words = {
+    'multi': [
+        "comments",
+        "Posted by"
+    ],
+    'single': [
+        "best",
+        "how",
+        "new"
+    ]
+}
+
+
+def check_skippable_query(query: list[str],full: str) -> bool:
+    if full.strip("1234567890") == "":
+        return True
+    if any(poop_word == full for poop_word in poop_words['single']):
+        return True
+    if any(poop_word in query for poop_word in poop_words['multi']):
+        return True
+    if len(query) <= 1:
+        return True
 
 
 def find_post(image_url) -> dict:
@@ -13,19 +35,17 @@ def find_post(image_url) -> dict:
         print("[UYARI]", yaziblok)
         try:
             wordbyword = yaziblok.split()
-            if len(wordbyword) <= 1 or "comments" in wordbyword or (
-                    any(listing in wordbyword for listing in ["best", "hot", "new"]) and len(
-                    wordbyword) == 1) or yaziblok.strip("1234567890") == "":
+            if check_skippable_query(wordbyword,yaziblok):
                 continue
-            #çok ayrıntılı bir arama
+            # çok ayrıntılı bir arama
             for advkelime in wordbyword:
-                if advkelime[0].isdigit() and (advkelime.endswith("k")  or advkelime.endswith(".")):
-                    yaziblok = yaziblok.replace(advkelime,"")
+                if advkelime[0].isdigit() and (advkelime.endswith("k") or advkelime.endswith(".")):
+                    yaziblok = yaziblok.replace(advkelime, "")
             yaziblok = yaziblok.strip()
             if yaziblok.split()[0].isdigit():
-                yaziblok = yaziblok.replace(yaziblok.split()[0],"")
+                yaziblok = yaziblok.replace(yaziblok.split()[0], "")
             yaziblok = yaziblok.strip()
-            print("Filtered:",yaziblok)
+            print("Filtered:", yaziblok)
             search = client.subreddit("all").search(yaziblok)
             notmatched = False
             foundany = False

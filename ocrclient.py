@@ -25,7 +25,6 @@ class OCR:
             print('[abort] request alınamadı')
             return None
         jRequest: dict = request.json()
-        print(request.content)
         if 'err' in jRequest:
             print(f'[abort] ocr hata verdi.resp:{jRequest}')
             return None

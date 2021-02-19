@@ -5,7 +5,7 @@ from client import client
 import logging
 
 def main():
-    logging.basicConfig(format='[%(asctime)s] [%(levelname)s]:%(message)s', level=logging.DEBUG, datefmt='%I.%M.%S')
+    logging.basicConfig(format='[%(asctime)s] [%(levelname)s]:%(message)s', level=logging.INFO, datefmt='%I.%M.%S')
 
     if client.read_only:
         logging.error('Hesap bilgileri doğru girilmedi veya bot read-only.')

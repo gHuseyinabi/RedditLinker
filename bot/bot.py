@@ -8,15 +8,12 @@ import logging
 
 def Bot(client: Reddit) -> None:
     logging.info(f'Started working')
-    print('in function Bot()')
     while True:
-        print('Loop')
         for item in client.inbox.unread(limit=None):
             try:
                 logging.info(f'[INFO]Got comment at {time.time()}')
                 if not isinstance(item, Comment):
                     continue
-                print('passed')
                 lower = item.body.lower()
                 if 'u/reddit_linker' in lower:
                     logging.info('New work')
@@ -32,6 +29,6 @@ def Bot(client: Reddit) -> None:
             except Exception as e:
                 logging.error(e)
             item.mark_read()
-        time.sleep(15)
+        time.sleep(30)
 
 __all__ = ['Bot']

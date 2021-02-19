@@ -1,5 +1,5 @@
 import requests
-from typing import Union
+from typing import Iterable, Union
 
 OCR_PARAMS: dict = {'lang': '*', 'srv': 'android'}
 OCR_BASE: str = 'https://translate.yandex.net/ocr/v1.1/recognize'
@@ -17,7 +17,7 @@ class OCR:
             return open(uri, "rb").read()
         pass
 
-    def get(self, uri, as_array=False) -> Union[None, list[str], str]:
+    def get(self, uri, as_array=False) -> Union[list[str], str,None]:
         bResim: bytes = self.get_image_bytes(uri)
         resim_header: dict = {'file': ('file', bResim, 'image/jpeg')}
         request: requests.Response = self.session.post(OCR_BASE, params=OCR_PARAMS, files=resim_header)

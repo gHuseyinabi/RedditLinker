@@ -1,6 +1,6 @@
-import loop
-from log import log
-from ocrclient import OCR
+from . import loop
+from util.log import log
+from client.ocrclient import OCR
 from praw.models import Comment
 from praw import Reddit
 import time
@@ -33,3 +33,5 @@ def Bot(client: Reddit):
                 log(f"[ERROR]:{e}\n")
             item.mark_read()
         time.sleep(15)
+
+__all__ = ['Bot']

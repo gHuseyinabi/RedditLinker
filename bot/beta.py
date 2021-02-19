@@ -1,6 +1,7 @@
+from typing import Union
 import client
 import re
-import findpost
+from util.findpost import find_post
 import praw.models
 titlere = re.compile("(\d[0-9]? (hours|days|minutes|minute|day|hour|month|year|years|months) ago)|(\d[0-9]?(h|m|y))")
 
@@ -24,7 +25,7 @@ def check_not_comment_body(query: str):
     return sum(buttonword in query for buttonword in buttonwords) > len(query.split()) / 2
 
 
-class CommentNotFoundException:
+class CommentNotFoundException(BaseException):
     error = "Comment Not Found"
 
     def __eq__(self, other):
@@ -40,7 +41,7 @@ class CommentNotFoundException:
     pass
 
 
-class CommentAuthorNotFoundException:
+class CommentAuthorNotFoundException(BaseException):
     error = "Comment Author Not Found"
 
     def __eq__(self, other):
@@ -56,7 +57,7 @@ class CommentAuthorNotFoundException:
     pass
 
 
-class UnsatisfiedFunctionParametersException:
+class UnsatisfiedFunctionParametersException(BaseException):
     error = "Parameters Don't require the information that need to run the function."
 
     def __eq__(self, other):
@@ -72,7 +73,7 @@ class UnsatisfiedFunctionParametersException:
     pass
 
 
-def find_comment(uri=None, prepText=None) -> praw:
+def find_comment(uri=None, prepText=None) -> Union[praw.models.Comment,type[None]]:
     if not prepText and uri:
         raise UnsatisfiedFunctionParametersException()
     if not prepText:
@@ -91,7 +92,7 @@ def find_comment(uri=None, prepText=None) -> praw:
             print(query)
             continue
         if author is None:
-            raise CommentAuthorNotFoundException()
+            continue
         for comment_ in client.client.redditor(author).comments.new(limit=None):
             if query in comment_.body:
                 match = comment_
@@ -100,14 +101,14 @@ def find_comment(uri=None, prepText=None) -> praw:
         if found:
             break
     if not match:
-        raise CommentNotFoundException()
+        return None
     return match
 
 
 def RedditLinkerGlobalFinder(img: str):
     imgPrep = client.ocr_client.get(img, True)
     if any("Posted by" in imgPrepText for imgPrepText in imgPrep):
-        post = findpost.find_post(img)
+        post = find_post(img)
         return post["matches"]
     else:
         try:
@@ -117,3 +118,4 @@ def RedditLinkerGlobalFinder(img: str):
             return []
     pass
 
+__all__ = ["RedditLinkerGlobalFinder"]

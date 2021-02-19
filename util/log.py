@@ -1,5 +1,4 @@
-from config import config
-
+from .config import config
 log_stream = open(config.get("logFile") if "logFile" in config else "default.log", "w")
 
 

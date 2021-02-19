@@ -1,22 +1,18 @@
 import praw
 
-from client import client
-from findpost import find_post
-import reply
-import beta
-from config import config
-import time
+from client.client import client
+from util.findpost import find_post
+from util import reply
+from . import beta
 import praw.models
-from log import log
+from util.log import log
 
 
 def ExecuteCommand(comment):
     log("Replying")
     print("Aha!Found a match.")
     post = comment.submission
-    canlook: bool = False
-    if hasattr(post, 'preview'):
-        canlook = True
+    canlook: bool = hasattr(post, 'preview')
     if canlook:
         Post = beta.RedditLinkerGlobalFinder(post.preview["images"][0]["source"]["url"])
         subreddit = comment.subreddit.display_name.lower()
@@ -26,8 +22,7 @@ def ExecuteCommand(comment):
         except:
             pass
         if Post is None or l is None:
-            base = reply.getTranslatedReplyByName("notfound", subreddit)
-            comment.reply(base + reply.getTranslatedReplyByName("sourcecode", subreddit))
+            comment.reply(reply.get_proper_reply([Post],subreddit))
         else:
             if hasattr(Post,"get"):
                 posts = Post.get("matches")
@@ -40,7 +35,7 @@ def ExecuteCommand(comment):
     else:
         comment.reply(reply.resimyok)
 
-
+__all__ = ['ExecuteCommand']
 """def loop(subredditname: str) -> None:
     print("Başlıyor...")
     

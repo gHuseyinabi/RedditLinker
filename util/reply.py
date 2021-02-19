@@ -1,13 +1,13 @@
 import praw.models
+from typing import Final
+formatted_link : Final = '[{}]({})'
+found : Final = 'Bunu bulabildim:'
+foundmuch : Final = 'Bunları bulabildim:'
+notfound : Final = 'Bir şey bulamadım :('
+resimyok : Final = 'Bir şey bulamadım çünkü bu postta resim yok.'
+sourcecode : Final = '\r\n^[kaynak kodum](https://github.com/gHuseyinabi/RedditLinker)'
 
-formatted_link = '[{}]({})'
-found = 'Bunu bulabildim:'
-foundmuch = 'Bunları bulabildim:'
-notfound = 'Bir şey bulamadım :('
-resimyok = 'Bir şey bulamadım çünkü bu postta resim yok.'
-sourcecode = '\r\n^[kaynak kodum](https://github.com/gHuseyinabi/RedditLinker)'
-
-replies = {
+replies : Final = {
     'commentauthor': {
         'tr': 'Yorumu yapan kişinin adı gözükmüyor ve yorumu yapanın adı olmadan yorumları bulamam.\r\nBelki bilerek '
               'gizlenmiştir? ',
@@ -49,14 +49,17 @@ def getTranslatedReplyByName(key: str, subredditname: str) -> str:
     return reply
 
 
-tcsubredditleri = ["kgbtr", "testyapiyorum", "svihs", "turkeyjerkey", "turkey"]
+tcsubredditleri : Final = ["kgbtr", "testyapiyorum", "svihs", "turkeyjerkey", "turkey", "svihstard", "mal"]  # <3
 
 
 def get_proper_reply(posts, subredditname) -> str:
     formations = '\n'.join(list(
         formatted_link.format(post.title if isinstance(post, praw.models.Submission) else "Yoruma git", post.permalink)
         for post in posts))
-    reply = replies["foundmuch"]
+    if posts:
+        reply = replies["foundmuch"]
+    else:
+        reply = replies["notfound"]
     if subredditname in tcsubredditleri:
         reply = reply["tr"]
     else:

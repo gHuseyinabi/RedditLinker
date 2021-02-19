@@ -10,3 +10,4 @@ yorumtest.png
 __setup__.py
 *.pyc
 .gitignore
+lookedupfor.log

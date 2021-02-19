@@ -1,36 +1,36 @@
 from . import loop
-from util.log import log
-from client.ocrclient import OCR
 from praw.models import Comment
 from praw import Reddit
 import time
 import threading
+import logging
 
 
-def Bot(client: Reddit):
-    log(f"[BOT]Started working at {time.time()}")
-    print("in function Bot()")
+def Bot(client: Reddit) -> None:
+    logging.info(f'Started working')
+    print('in function Bot()')
     while True:
-        print("Loop")
+        print('Loop')
         for item in client.inbox.unread(limit=None):
             try:
-                log(f"[INFO]Got comment at {time.time()}")
+                logging.info(f'[INFO]Got comment at {time.time()}')
                 if not isinstance(item, Comment):
                     continue
-                print("passed")
+                print('passed')
                 lower = item.body.lower()
-                if "u/reddit_linker" in lower:
-                    print("aha")
+                if 'u/reddit_linker' in lower:
+                    logging.info('New work')
                     threading.Thread(target=loop.ExecuteCommand, args=(item,)).start()
-                elif lower == "good bot":
-                    item.reply("ヽ(•‿•)ノ")
-                elif lower == "bad bot":
-                    item.reply("( ._.)")
+                elif lower == 'good bot':
+                    logging.info('Good bot')
+                    item.reply('ヽ(•‿•)ノ')
+                elif lower == 'bad bot':
+                    logging.info('Bad bot')
+                    item.reply('( ._.)')
                 else:
-                    print("nope", lower)
+                    print('nope', lower)
             except Exception as e:
-                print(f"Oops,thats stinky!Error:{e}")
-                log(f"[ERROR]:{e}\n")
+                logging.error(e)
             item.mark_read()
         time.sleep(15)
 

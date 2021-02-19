@@ -43,25 +43,25 @@ replies : Final = {
 def getTranslatedReplyByName(key: str, subredditname: str) -> str:
     base = replies[key]
     if subredditname in tcsubredditleri:
-        reply = base["tr"]
+        reply = base['tr']
     else:
-        reply = base["other"]
+        reply = base['other']
     return reply
 
 
-tcsubredditleri : Final = ["kgbtr", "testyapiyorum", "svihs", "turkeyjerkey", "turkey", "svihstard", "mal"]  # <3
+tcsubredditleri : Final = ['kgbtr', 'testyapiyorum', 'svihs', 'turkeyjerkey', 'turkey', 'svihstard', 'mal']  # <3
 
 
 def get_proper_reply(posts, subredditname) -> str:
     formations = '\n'.join(list(
-        formatted_link.format(post.title if isinstance(post, praw.models.Submission) else "Yoruma git", post.permalink)
+        formatted_link.format(post.title if isinstance(post, praw.models.Submission) else 'Yoruma git', post.permalink)
         for post in posts))
     if posts:
-        reply = replies["foundmuch"]
+        reply = replies['foundmuch']
     else:
-        reply = replies["notfound"]
+        reply = replies['notfound']
     if subredditname in tcsubredditleri:
-        reply = reply["tr"]
+        reply = reply['tr']
     else:
-        reply = reply["other"]
-    return reply + formations + getTranslatedReplyByName("sourcecode", subredditname)
+        reply = reply['other']
+    return reply + formations + getTranslatedReplyByName('sourcecode', subredditname)

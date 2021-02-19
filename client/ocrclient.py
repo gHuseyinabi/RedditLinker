@@ -1,3 +1,4 @@
+import logging
 import requests
 from typing import Iterable, Union
 
@@ -11,10 +12,10 @@ class OCR:
 
     def get_image_bytes(self, uri) -> bytes:
         uri = str(uri)
-        if uri.startswith("http"):
+        if uri.startswith('http'):
             return self.session.get(uri).content
         else:
-            return open(uri, "rb").read()
+            return open(uri, 'rb').read()
         pass
 
     def get(self, uri, as_array=False) -> Union[list[str], str,None]:
@@ -22,20 +23,20 @@ class OCR:
         resim_header: dict = {'file': ('file', bResim, 'image/jpeg')}
         request: requests.Response = self.session.post(OCR_BASE, params=OCR_PARAMS, files=resim_header)
         if request is None:
-            print('[abort] request alınamadı')
+            logging.error('request alınamadı')
             return None
         jRequest: dict = request.json()
         if 'err' in jRequest:
-            print(f'[abort] ocr hata verdi.resp:{jRequest}')
+            logging.error(f'ocr hata verdi.resp:{jRequest}')
             return None
         texts: list[str] = []
-        text: str = ""
+        text: str = ''
         for _ in jRequest['data']['blocks']:
             for __ in _['boxes']:
                 if as_array:
                     texts.append(__['text'])
                 else:
-                    text = __["text"] + '\n'
+                    text = __['text'] + '\n'
         if as_array:
             return texts
         else:

@@ -1,16 +1,10 @@
-import praw
-
-from client.client import client
-from util.findpost import find_post
+import logging
 from util import reply
 from . import beta
 import praw.models
-from util.log import log
 
-
-def ExecuteCommand(comment):
-    log("Replying")
-    print("Aha!Found a match.")
+def ExecuteCommand(comment: praw.models.Comment) -> None:
+    logging.info("Le command arrived.")
     post = comment.submission
     canlook: bool = hasattr(post, 'preview')
     if canlook:
@@ -31,42 +25,8 @@ def ExecuteCommand(comment):
             final = reply.get_proper_reply(posts, subreddit)
             print("[Yanit verildi]", final)
             comment.reply(final)
-            log(f"{final}\n\n")
+            logging.debug(f"{final}\n\n")
     else:
         comment.reply(reply.resimyok)
 
 __all__ = ['ExecuteCommand']
-"""def loop(subredditname: str) -> None:
-    print("Başlıyor...")
-    
-    print("Listening comments at " + subredditname)
-    stream = client.subreddit(subredditname).stream
-
-    try:
-        for comment in stream.comments(skip_existing=True):
-            try:
-                cbody: str = comment.body.lower()
-                if "u/redditlinker" in cbody or "u/reddit_linker" in cbody:
-                    log_stream.write("Replying")
-                    print("Aha!Found a match.")
-                    post = comment.submission
-                    canlook: bool = False
-                    if hasattr(post, 'preview'):
-                        canlook = True
-                    if canlook:
-                        Post = find_post(post.preview["images"][0]["source"]["url"])
-                        if Post is None or Post.get("match") is None:
-                            comment.reply(reply.notfound + reply.sourcecode)
-                        else:
-                            posts = Post.get("matches")
-                            final = reply.get_proper_reply(posts)
-                            print("[Yanit verildi]", final)
-                            comment.reply(final)
-                    else:
-                        comment.reply(reply.resimyok)
-            except Exception as e:
-                print(e)
-                continue
-    except Exception as e:
-        print("[error]", e)
-        loop(subredditname)"""

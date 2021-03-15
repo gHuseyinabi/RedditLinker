@@ -6,7 +6,7 @@ import threading
 import logging
 
 
-def Bot(client: Reddit) -> None:
+def Bot(client: Reddit):
     logging.info(f'Started working')
     while True:
         for item in client.inbox.unread(limit=None):
@@ -15,20 +15,22 @@ def Bot(client: Reddit) -> None:
                 if not isinstance(item, Comment):
                     continue
                 lower = item.body.lower()
-                if 'u/reddit_linker' in lower:
+                if client.user.me().name.lower() in lower:
                     logging.info('New work')
-                    threading.Thread(target=loop.ExecuteCommand, args=(item,)).start()
-                elif lower == 'good bot':
+                    threading.Thread(target=loop.ExecuteCommand,
+                                     args=(item,)).start()
+                elif 'good bot' in lower:
                     logging.info('Good bot')
-                    item.reply('ヽ(•‿•)ノ')
-                elif lower == 'bad bot':
+                    item.reply('thank')
+                elif 'bad bot' in lower:
                     logging.info('Bad bot')
-                    item.reply('( ._.)')
+                    item.reply('thank :(')
                 else:
                     print('nope', lower)
             except Exception as e:
                 logging.error(e)
             item.mark_read()
         time.sleep(30)
+
 
 __all__ = ['Bot']

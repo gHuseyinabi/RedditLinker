@@ -7,10 +7,10 @@ OCR_BASE: str = 'https://translate.yandex.net/ocr/v1.1/recognize'
 
 
 class OCR:
-    def __init__(self) -> None:
+    def __init__(self):
         self.session = requests.session()
 
-    def get_image_bytes(self, uri) -> bytes:
+    def get_image_bytes(self, uri):
         uri = str(uri)
         if uri.startswith('http'):
             return self.session.get(uri).content
@@ -18,25 +18,25 @@ class OCR:
             return open(uri, 'rb').read()
         pass
 
-    def get(self, uri, as_array=False) -> Union[list[str], str,None]:
-        bResim: bytes = self.get_image_bytes(uri)
-        resim_header: dict = {'file': ('file', bResim, 'image/jpeg')}
+    def get(self, uri, as_array=False):
+        bResim = self.get_image_bytes(uri)
+        resim_header = {'file': ('file', bResim, 'image/jpeg')}
         request: requests.Response = self.session.post(OCR_BASE, params=OCR_PARAMS, files=resim_header)
         if request is None:
             logging.error('request alınamadı')
             return None
-        jRequest: dict = request.json()
+        jRequest = request.json()
         if 'err' in jRequest:
             logging.error(f'ocr hata verdi.resp:{jRequest}')
             return None
-        texts: list[str] = []
-        text: str = ''
-        for _ in jRequest['data']['blocks']:
-            for __ in _['boxes']:
+        texts = []
+        text = ''
+        for Block in jRequest['data']['blocks']:
+            for Box in Block['boxes']:
                 if as_array:
-                    texts.append(__['text'])
+                    texts.append(Box['text'])
                 else:
-                    text = __['text'] + '\n'
+                    text = Box['text'] + '\n'
         if as_array:
             return texts
         else:

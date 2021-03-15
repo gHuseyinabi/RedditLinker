@@ -1,5 +1,5 @@
 from client import client, ocr_client
-
+import logging
 poop_words = {
     'multi': [
         "comments",
@@ -13,29 +13,36 @@ poop_words = {
 }
 
 
-def check_skippable_query(query: list[str],full: str) -> bool:
-    if full.strip("1234567890") == "":
+def SafeIndex(arr, index):
+    try:
+        return arr[index]
+    except:
+        return ""
+
+
+def check_skippable_query(query: list[str], full: str) -> bool:
+    if full.strip("1234567890 ") == "":
         return True
     if any(poop_word == full for poop_word in poop_words['single']):
         return True
     if any(poop_word in query for poop_word in poop_words['multi']):
+        logging.info("User may be " + SafeIndex(query, 2))
         return True
     if len(query) <= 1:
         return True
 
 
-def find_post(image_url) -> dict:
+def find_post(image_url):
     yazi = ocr_client.get(image_url, as_array=True)
-    print(yazi)
+    logging.info(yazi)
     full = " ".join(yazi)
     matches = []
     matchnums = []
     truematch = None
-    for yaziblok in yazi[1:]:
-        print("[UYARI]", yaziblok)
+    for yaziblok in yazi:
         try:
             wordbyword = yaziblok.split()
-            if check_skippable_query(wordbyword,yaziblok):
+            if check_skippable_query(wordbyword, yaziblok):
                 continue
             # çok ayrıntılı bir arama
             for advkelime in wordbyword:
@@ -45,13 +52,13 @@ def find_post(image_url) -> dict:
             if yaziblok.split()[0].isdigit():
                 yaziblok = yaziblok.replace(yaziblok.split()[0], "")
             yaziblok = yaziblok.strip()
-            print("Filtered:", yaziblok)
+            logging.info("Filtered:"+yaziblok)
             search = client.subreddit("all").search(yaziblok)
             notmatched = False
             foundany = False
             for result in search:
                 title = result.title
-                directaccess = False
+                directaccess = title == yaziblok
                 if title == yaziblok:
                     directaccess = True
                 if not directaccess:
@@ -62,7 +69,8 @@ def find_post(image_url) -> dict:
                         continue
                 foundany = True
                 matches.append(result)
-                print(f"Found one!The name is {result.title} and the url is https://www.reddit.com{result.permalink}")
+                print(
+                    f"Found one!The name is {result.title} and the url is https://www.reddit.com{result.permalink}")
             if foundany:
                 break
         except Exception as e:
@@ -73,4 +81,4 @@ def find_post(image_url) -> dict:
         matchnums.append(length)
         if length == max(matchnums):
             truematch = match
-    return {"match": truematch, "matches": matches}
+    return truematch

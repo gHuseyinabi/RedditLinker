@@ -17,7 +17,7 @@ buttonwords = [
 ]
 
 
-def check_not_comment_body(query: str) -> bool:
+def check_not_comment_body(query):
     logging.info(query)
     if titlere.search(query):
         if titlere.search(' '.join(query.split()[1:]).strip()):

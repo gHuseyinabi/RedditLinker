@@ -20,7 +20,7 @@ def SafeIndex(arr, index):
         return ""
 
 
-def check_skippable_query(query: list[str], full: str) -> bool:
+def check_skippable_query(query, full):
     if full.strip("1234567890 ") == "":
         return True
     if any(poop_word == full for poop_word in poop_words['single']):

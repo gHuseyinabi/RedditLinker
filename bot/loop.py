@@ -1,10 +1,9 @@
 import logging
 from util import reply
 from . import beta
-import praw.models
 
 
-def ExecuteCommand(comment: praw.models.Comment):
+def ExecuteCommand(comment):
     logging.info('Command arrived.')
     post = comment.submission
     subreddit = comment.subreddit.display_name.lower()

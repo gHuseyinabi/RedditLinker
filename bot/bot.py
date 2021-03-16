@@ -6,10 +6,15 @@ import threading
 import logging
 
 
-def Bot(client: Reddit):
+def Bot(client):
     logging.info(f'Started working')
     while True:
-        for item in client.inbox.unread(limit=None):
+        messages = ()
+        try:
+            messages = client.inbox.unread(limit=None)
+        except:
+            continue
+        for item in messages:
             try:
                 logging.info(f'[INFO]Got comment at {time.time()}')
                 if not isinstance(item, Comment):
